@@ -22,6 +22,7 @@ function doAnonymousAuth(){
         });
     }
 
+doAnonymousAuth()
 
 function writeComment(comment, user_id) {
         var commentFeed = document.getElementById('commentFeed');
@@ -74,6 +75,9 @@ function refreshComments() {
     }
 	
 writeButton.onclick = () => {
+	
+	doAnonymousAuth()
+	
         if (restaurantName != ""){
             
             var inputVal = prompt("Enter your comment : ", "comment");
@@ -92,6 +96,6 @@ writeButton.onclick = () => {
        refreshComments();
    }
     
-    doAnonymousAuth()
+    
     
 });
