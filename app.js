@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded',() => {
 const stitchClient = new stitch.StitchClient("test-stitch-kpnmk");
 const mongoClient = stitchClient.service("mongodb", "mongodb-atlas");
 
-const db = mongoClient.db("test-stitch");
+const db = mongoClient.db("asa");
 const coll = db.collection("users");
 
  
@@ -22,7 +22,33 @@ function doAnonymousAuth(){
         });
     }
 
-doAnonymousAuth()
+//doAnonymousAuth()
+
+function searchRestaurant(text) {
+        clearComments()
+        
+        coll.find({"name" : text }).then( payload => {
+            console.log(payload);
+            
+            if (payload.length == 0){
+                document.getElementById("resultFound").innerHTML = "Result not found";
+            } else {
+                console.log("result returned");
+                document.getElementById("resultFound").innerText = "Found Restaurant";
+                document.getElementById("cuisine").innerText = payload[0].cuisine;
+                document.getElementById("location").innerText = payload[0].location;
+                restaurantName = document.getElementById("restaurantName").value;
+                
+                const comments = payload[0].comments;
+                for (var i = 0; i < comments.length; i++){
+                    writeComment(comments[i].comment, comments[i].user_id);
+                }
+            }
+        }).catch ( err => {
+            console.error("error in search", err);
+        });
+    }
+
 
 function writeComment(comment, user_id) {
         var commentFeed = document.getElementById('commentFeed');
@@ -31,6 +57,8 @@ function writeComment(comment, user_id) {
         var userName = document.createElement('p');
         var userComment = document.createElement('p');
         
+		console.log("before if");
+		
         if (user_id === null){
             const query = {"name" : restaurantName};
             const update = {
@@ -41,7 +69,7 @@ function writeComment(comment, user_id) {
                     }
                 }
             }
-            
+            console.log("before update")
             coll.updateOne(query,update).then( () => {
                refreshComments();
             }).catch( err => {
